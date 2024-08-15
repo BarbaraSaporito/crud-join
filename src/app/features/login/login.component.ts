@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -34,19 +36,22 @@ import { MatInputModule } from '@angular/material/input';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
-  loginForm: FormGroup;
+    private fb = inject(FormBuilder);
+    private authService = inject(AuthService);
+    private router = inject(Router);
 
-  constructor(private fb: FormBuilder) {
-    this.loginForm = this.fb.group({
+    loginForm: FormGroup = this.fb.group({
       usuario: ['', Validators.required],
       senha: ['', Validators.required]
     });
-  }
 
-  onSubmit(): void {
-    if (this.loginForm.valid) {
-      const { usuario, senha } = this.loginForm.value;
-      console.log(`Usuario: ${usuario}, Senha": ${senha}`);
- }
-  }
+    onSubmit(): void {
+      if (this.loginForm.valid) {
+        const { usuario, senha } = this.loginForm.value;
+        if (this.authService.login(usuario, senha)) {
+          this.router.navigate(['categorias']);
+        } else {
+        }
+      }
+    }
 }
