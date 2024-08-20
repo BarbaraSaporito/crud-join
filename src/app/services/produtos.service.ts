@@ -2,18 +2,16 @@ import { Injectable } from '@angular/core';
 import { Produto } from '../interfaces/produto';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProdutosService {
   private produtos: Produto[] = [
     { id: 1, nome: 'Smartphone', descricao: 'Celular Android', preco: 2000, categoriaId: 1 },
-    { id: 2, nome: 'Calça Jeans', descricao: 'Calça confortável', preco: 150, categoriaId: 2 }
+    { id: 2, nome: 'Calça Jeans', descricao: 'Calça confortável', preco: 150, categoriaId: 2 },
   ];
-  private proximoId = 1;
 
   listarProdutos(): Produto[] {
     return [...this.produtos];
-
   }
 
   listarProdutoById(id: number): Produto | undefined {
@@ -21,7 +19,7 @@ export class ProdutosService {
   }
 
   adicionarProduto(produto: Omit<Produto, 'id'>): void {
-    this.produtos.push({ ...produto, id: this.proximoId++ });
+    this.produtos.push({ ...produto, id: this.produtos.length + 1 });
   }
 
   atualizarProduto(id: number, atualizarProduto: Omit<Produto, 'id'>): void {
@@ -34,5 +32,4 @@ export class ProdutosService {
   deleteProduto(id: number): void {
     this.produtos = this.produtos.filter(produto => produto.id !== id);
   }
-
 }

@@ -2,17 +2,16 @@ import { Injectable } from '@angular/core';
 import { Categoria } from '../interfaces/categoria';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CategoriasService {
   private categorias: Categoria[] = [
     { id: 1, nome: 'Eletrônicos', descricao: 'Gadgets e dispositivos' },
-    { id: 2, nome: 'Roupas', descricao: 'Vestuário e acessórios' }
+    { id: 2, nome: 'Roupas', descricao: 'Vestuário e acessórios' },
   ];
-  private proximoId = 1;
 
   listarCategorias(): Categoria[] {
-    return this.categorias;
+    return [...this.categorias];
   }
 
   listarCategoriaById(id: number): Categoria | undefined {
@@ -20,7 +19,7 @@ export class CategoriasService {
   }
 
   adicionarCategoria(categoria: Omit<Categoria, 'id'>): void {
-    this.categorias.push({ ...categoria, id: this.proximoId++ });
+    this.categorias.push({ ...categoria, id: this.categorias.length + 1 });
   }
 
   atualizarCategoria(id: number, atualizarCategoria: Omit<Categoria, 'id'>): void {
@@ -34,4 +33,3 @@ export class CategoriasService {
     this.categorias = this.categorias.filter(categoria => categoria.id !== id);
   }
 }
-
