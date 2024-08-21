@@ -1,0 +1,34 @@
+<h5>Relacionar Categorias e Produtos</h5>
+<form [formGroup]="relacionamentoForm" (ngSubmit)="onSave()">
+  <mat-form-field appearance="outline">
+    <mat-label>Categoria</mat-label>
+    <mat-select formControlName="categoriaId">
+      <mat-option *ngFor="let categoria of categorias | async" [value]="categoria.id">{{ categoria.nome }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Produto</mat-label>
+    <mat-select formControlName="produtoId">
+      <mat-option *ngFor="let produto of produtos | async" [value]="produto.id">{{ produto.nome }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" [disabled]="!relacionamentoForm.valid">Relacionar</button>
+</form>
+
+<h5>Lista de Relacionamentos</h5>
+<table mat-table [dataSource]="relacionamentos" class="mat-elevation-z8">
+  <ng-container matColumnDef="categoria">
+    <th mat-header-cell *matHeaderCellDef> Categoria </th>
+    <td mat-cell *matCellDef="let rel"> {{ rel.categoria.nome }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="produto">
+    <th mat-header-cell *matHeaderCellDef> Produto </th>
+    <td mat-cell *matCellDef="let rel"> {{ rel.produto.nome }} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
