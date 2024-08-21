@@ -15,7 +15,7 @@ import { ItemFormComponent } from '../../shared/item-form/item-form.component';
     CommonModule, ItemFormComponent, ReactiveFormsModule, MatTableModule, MatIconModule, MatButtonModule, ItemFormComponent
   ],
   templateUrl: './categorias.component.html',
-  styleUrl: './categorias.component.css',
+  styleUrls: ['./categorias.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoriasComponent {
@@ -23,17 +23,25 @@ export class CategoriasComponent {
   private categoriasService = inject(CategoriasService);
 
   categoriaForm: FormGroup = this.fb.group({
+    id: [null], 
     nome: ['', Validators.required],
     descricao: ['', Validators.required],
   });
 
-  categorias = this.categoriasService.listarCategorias();
+  categorias$ = this.categoriasService.listarCategorias();
 
   displayedColumns: string[] = ['nome', 'descricao', 'acoes'];
 
   onSave(): void {
-    this.categoriasService.adicionarCategoria(this.categoriaForm.value);
-    this.categorias = this.categoriasService.listarCategorias();
+    if (this.categoriaForm.valid) {
+      const categoria = this.categoriaForm.value;
+      if (categoria.id) {
+        this.categoriasService.atualizarCategoria(categoria);
+      } else {
+        this.categoriasService.adicionarCategoria(categoria);
+      }
+      this.categoriaForm.reset();
+    }
   }
 
   onEdit(categoria: Categoria): void {
@@ -42,6 +50,5 @@ export class CategoriasComponent {
 
   onDelete(id: number): void {
     this.categoriasService.deleteCategoria(id);
-    this.categorias = this.categoriasService.listarCategorias();
   }
 }

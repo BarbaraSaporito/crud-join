@@ -28,19 +28,24 @@ export class ProdutosComponent {
   private produtosService = inject(ProdutosService);
 
   produtoForm: FormGroup = this.fb.group({
+    id: [null], 
     nome: ['', Validators.required],
     descricao: ['', Validators.required],
     preco: ['', [Validators.required, Validators.min(0.01)]],
   });
 
-  produtos = this.produtosService.listarProdutos();
+  produtos$ = this.produtosService.listarProdutos();
 
   displayedColumns: string[] = ['nome', 'descricao', 'preco', 'acoes'];
 
   onSave(): void {
     if (this.produtoForm.valid) {
-      this.produtosService.adicionarProduto(this.produtoForm.value);
-      this.produtos = this.produtosService.listarProdutos();
+      const produto = this.produtoForm.value;
+      if (produto.id) {
+        this.produtosService.atualizarProduto(produto);
+      } else {
+        this.produtosService.adicionarProduto(produto);
+      }
       this.produtoForm.reset();
     }
   }
@@ -51,6 +56,5 @@ export class ProdutosComponent {
 
   onDelete(id: number): void {
     this.produtosService.deleteProduto(id);
-    this.produtos = this.produtosService.listarProdutos();
   }
 }

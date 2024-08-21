@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Categoria } from '../interfaces/categoria';
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable } from "rxjs";
+import { Categoria } from "../interfaces/categoria";
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +23,11 @@ export class CategoriasService {
 
   adicionarCategoria(categoria: Omit<Categoria, 'id'>): void {
     const categorias = [...this.categoriasSubject.getValue(), { ...categoria, id: this.categoriasSubject.getValue().length + 1 }];
+    this.categoriasSubject.next(categorias);
+  }
+
+  atualizarCategoria(categoria: Categoria): void {
+    const categorias = this.categoriasSubject.getValue().map(c => c.id === categoria.id ? categoria : c);
     this.categoriasSubject.next(categorias);
   }
 

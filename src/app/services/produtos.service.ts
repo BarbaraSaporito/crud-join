@@ -26,6 +26,11 @@ export class ProdutosService {
     this.produtosSubject.next(produtos);
   }
 
+  atualizarProduto(produto: Produto): void {
+    const produtos = this.produtosSubject.getValue().map(p => p.id === produto.id ? produto : p);
+    this.produtosSubject.next(produtos);
+  }
+
   deleteProduto(id: number): void {
     const produtos = this.produtosSubject.getValue().filter(produto => produto.id !== id);
     this.produtosSubject.next(produtos);
