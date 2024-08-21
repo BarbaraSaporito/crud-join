@@ -6,7 +6,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { Relacionamento } from '../../interfaces/relacionamento';
 import { CategoriasService } from '../../services/categorias.service';
 import { ProdutosService } from '../../services/produtos.service';
 import { RelacionamentoService } from '../../services/relacionamento.service';
@@ -42,7 +41,7 @@ export class RelacionamentoComponent {
   produtos = this.produtosService.listarProdutos();
   relacionamentos = this.relacionamentoService.listarRelacionamentos();
 
-  displayedColumns: string[] = ['categoria', 'produto', 'acoes'];
+  displayedColumns: string[] = ['categoria', 'produto'];
 
   onSave(): void {
     if (this.relacionamentoForm.valid) {
@@ -55,8 +54,4 @@ export class RelacionamentoComponent {
     }
   }
 
-  onDelete(rel: Relacionamento): void {
-    this.relacionamentoService.deleteRelacionamento(rel.categoriaId, rel.produtoId);
-    this.relacionamentos = this.relacionamentoService.listarRelacionamentos();
-  }
 }
