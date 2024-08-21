@@ -1,42 +1,29 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
 import { Produto } from '../../interfaces/produto';
 import { ProdutosService } from '../../services/produtos.service';
 import { ItemFormComponent } from '../../shared/item-form/item-form.component';
-
 
 @Component({
   selector: 'app-produtos',
   standalone: true,
   imports: [
-    CommonModule, 
-    ItemFormComponent, 
+    CommonModule,
+    ItemFormComponent,
     ReactiveFormsModule,
-   
+    MatTableModule,
+    MatIconModule,
+    MatButtonModule,
   ],
-  template: `
-    <section class="produtos-container">
-      <h5>Cadastro de produto</h5>
-      <app-item-form 
-        [formGroup]="produtoForm" 
-        [itemType]="'produto'"
-        (formSubmit)="onSave()">
-      </app-item-form>
-
-      <h5>Lista de produtos</h5>
-      <ul>
-        <li *ngFor="let produto of produtos" (click)="onEdit(produto)">
-          {{ produto.nome }} - {{ produto.descricao }} - {{ produto.preco | currency:'BRL' }}
-        </li>
-      </ul>
-    </section>
-  `,
+  templateUrl: './produtos.component.html',
   styleUrls: ['./produtos.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  schemas: [NO_ERRORS_SCHEMA]
 })
-export class ProdutosComponent { 
+export class ProdutosComponent {
   private fb = inject(FormBuilder);
   private produtosService = inject(ProdutosService);
 
@@ -46,16 +33,24 @@ export class ProdutosComponent {
     preco: ['', [Validators.required, Validators.min(0.01)]],
   });
 
-  produtos: Produto[] = this.produtosService.listarProdutos();
+  produtos = this.produtosService.listarProdutos();
+
+  displayedColumns: string[] = ['nome', 'descricao', 'preco', 'acoes'];
 
   onSave(): void {
-    this.produtosService.adicionarProduto(this.produtoForm.value);
-    this.produtos = this.produtosService.listarProdutos(); 
+    if (this.produtoForm.valid) {
+      this.produtosService.adicionarProduto(this.produtoForm.value);
+      this.produtos = this.produtosService.listarProdutos();
+      this.produtoForm.reset();
+    }
   }
 
   onEdit(produto: Produto): void {
     this.produtoForm.patchValue(produto);
   }
+
+  onDelete(id: number): void {
+    this.produtosService.deleteProduto(id);
+    this.produtos = this.produtosService.listarProdutos();
+  }
 }
-
-
